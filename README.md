@@ -1,4 +1,4 @@
-# 🚀 CodeCraft AI Assistant - EKS Deployment
+# 🚀 CodeCraft AI Assistant (Agents) - EKS Deployment
 **Production-ready multimodal AI coding assistant deployed on AWS EKS with enterprise-grade security and scalability.**
 
 ## 🎯 Overview
