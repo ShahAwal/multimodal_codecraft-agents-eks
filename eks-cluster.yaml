@@ -1,0 +1,57 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: codecraft-cluster
+  region: us-east-1
+  version: "1.30"
+
+availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+# IAM settings
+iam:
+  withOIDC: true
+  serviceAccounts:
+  - metadata:
+      name: aws-load-balancer-controller
+      namespace: kube-system
+    wellKnownPolicies:
+      awsLoadBalancerController: true
+  - metadata:
+      name: external-secrets
+      namespace: kube-system
+    attachPolicyARNs:
+    - arn:aws:iam::aws:policy/SecretsManagerReadWrite
+
+# Node groups
+nodeGroups:
+  - name: codecraft-nodes
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 1
+    maxSize: 4
+    volumeSize: 20
+    ssh:
+      allow: true
+    labels:
+      role: worker
+    tags:
+      Environment: production
+      Project: codecraft-ai
+    iam:
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+
+# Add-ons
+addons:
+- name: vpc-cni
+- name: coredns
+- name: kube-proxy
+- name: aws-ebs-csi-driver
+
+# CloudWatch logging
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["api", "audit", "authenticator", "controllerManager", "scheduler"]

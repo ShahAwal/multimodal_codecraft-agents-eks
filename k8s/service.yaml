@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: codecraft-service
+  namespace: codecraft
+spec:
+  selector:
+    app: codecraft-app
+  ports:
+  - port: 80
+    targetPort: 8501
+    protocol: TCP
+  type: ClusterIP
